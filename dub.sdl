@@ -1,4 +1,5 @@
 name "logger"
+version "1.0.0"
 description "A logging utility for dynamic values in D"
 copyright "Copyright © 2016, zane"
 authors "Zane Sterling"
