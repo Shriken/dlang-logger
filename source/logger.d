@@ -37,7 +37,7 @@ class Logger {
 			LINES - VAR_WINDOW_HEIGHT, COLS,
 			VAR_WINDOW_HEIGHT, 0
 		);
-		wprintw(logWindow, "Hello world\n");
+		scrollok(logWindow, true);
 		refresh();
 	}
 

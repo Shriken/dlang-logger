@@ -7,6 +7,7 @@ import logger;
 
 void main() {
 	auto logger = new Logger();
+	logger.writeln("Hello world");
 	logger.writeln("asdf ", 1, 2, 3, ' ', 3.5);
 
 	auto x = 1;
