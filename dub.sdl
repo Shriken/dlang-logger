@@ -1,5 +1,6 @@
 name "logger"
-description "A minimal D application."
+description "A logging utility for dynamic values in D"
 copyright "Copyright © 2016, zane"
-authors "zane"
+authors "Zane Sterling"
+license "MIT"
 dependency "ncurses" version="~master"
