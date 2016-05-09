@@ -68,6 +68,17 @@ class Logger {
 	}
 
 	public void writeln(A...)(A a) {
+		writeNoRefresh(a);
+		waddch(logWindow, '\n');
+		wrefresh(logWindow);
+	}
+
+	public void write(A...)(A a) {
+		writeNoRefresh(a);
+		wrefresh(logWindow);
+	}
+
+	private void writeNoRefresh(A...)(A a) {
 		foreach (arg; a) {
 			static if (isSomeChar!(typeof(arg))) {
 				waddch(logWindow, arg);
@@ -79,9 +90,6 @@ class Logger {
 				wprintw(logWindow, "%.*s", arg.length, arg.ptr);
 			}
 		}
-
-		waddch(logWindow, '\n');
-		wrefresh(logWindow);
 	}
 
 	private void render() {
