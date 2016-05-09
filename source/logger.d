@@ -30,6 +30,7 @@ class Logger {
 	this() {
 		initscr();
 		noecho();
+		curs_set(0);
 
 		varWindow = newwin(VAR_WINDOW_HEIGHT, COLS, 0, 0);
 		logWindow = newwin(
@@ -41,26 +42,21 @@ class Logger {
 	}
 
 	~this() {
+		curs_set(1);
 		delwin(varWindow);
 		delwin(logWindow);
 		endwin();
 	}
 
 	public void setValue(T)(string key, T value) {
-		bool keyAdded = false;
 		if (key !in values) {
-			keyAdded = true;
 			wresize(varWindow, VAR_WINDOW_HEIGHT + 1, COLS);
 			wresize(logWindow, LINES - VAR_WINDOW_HEIGHT - 1, COLS);
 			mvwin(logWindow, VAR_WINDOW_HEIGHT + 1, 0);
 		}
 
 		values[key] = value.to!string;
-		if (keyAdded) {
-			render();
-		} else {
-			wrefresh(varWindow);
-		}
+		render();
 	}
 
 	public void delValue(string key) {
