@@ -2,6 +2,7 @@ module logger;
 
 import std.conv;
 import std.stdio;
+import std.traits;
 
 import deimos.ncurses;
 
@@ -46,16 +47,48 @@ class Logger {
 	}
 
 	public void setValue(T)(string key, T value) {
+		bool keyAdded = false;
 		if (key !in values) {
+			keyAdded = true;
 			wresize(varWindow, VAR_WINDOW_HEIGHT + 1, COLS);
 			wresize(logWindow, LINES - VAR_WINDOW_HEIGHT - 1, COLS);
 			mvwin(logWindow, VAR_WINDOW_HEIGHT + 1, 0);
 		}
+
 		values[key] = value.to!string;
-		render();
+		if (keyAdded) {
+			render();
+		} else {
+			wrefresh(varWindow);
+		}
 	}
 
-	public void render() {
+	public void delValue(string key) {
+		values.remove(key);
+	}
+
+	public void clearValues() {
+		values.clear();
+	}
+
+	public void writeln(A...)(A a) {
+		foreach (arg; a) {
+			static if (isSomeChar!(typeof(arg))) {
+				waddch(logWindow, arg);
+			} else static if (__traits(isFloating, arg)) {
+				wprintw(logWindow, "%f", arg);
+			} else static if (__traits(isIntegral, arg)) {
+				wprintw(logWindow, "%d", arg);
+			} else static if (isSomeString!(typeof(arg))) {
+				wprintw(logWindow, "%.*s", arg.length, arg.ptr);
+			}
+		}
+
+		waddch(logWindow, '\n');
+		wrefresh(logWindow);
+	}
+
+	private void render() {
 		wmove(varWindow, 0, 0);
 		foreach (key, val; values) {
 			wprintw(
@@ -73,9 +106,5 @@ class Logger {
 		wrefresh(varWindow);
 		wrefresh(logWindow);
 		refresh();
-	}
-
-	public void clearVars() {
-		values.clear();
 	}
 }
